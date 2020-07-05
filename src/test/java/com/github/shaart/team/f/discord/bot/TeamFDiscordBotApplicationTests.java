@@ -1,4 +1,4 @@
-package shaart.team.f.discord.bot;
+package com.github.shaart.team.f.discord.bot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
