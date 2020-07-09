@@ -1,11 +1,12 @@
 package com.github.shaart.team.f.discord.bot.config;
 
-import java.util.Collections;
+import com.github.shaart.team.f.discord.bot.properties.TeamFDiscordBotProperties;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDABuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.github.shaart.team.f.discord.bot.properties.TeamFDiscordBotProperties;
+
+import java.util.Collections;
 
 @Configuration
 @RequiredArgsConstructor
