@@ -21,4 +21,4 @@ branches:
   - dev
 
 script:
-  - ./gradlew build --scan -s
+  - ./gradlew build -s
