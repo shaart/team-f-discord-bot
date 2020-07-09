@@ -7,9 +7,18 @@
 
 # About
 Team's bot for discord. Helps to manage team's events.
+- Developed on OpenJDK11.
+- Supported Java: 11+. 
 
 # How to build
-`<under construct>`
+1. Build the application.
+```shell script
+./gradlew build
+```
 
 # How to run
-`<under construct>`
+1. Build the application.
+2. Run the application.
+```shell script
+java -jar -Dteam.f.discord.bot.token=<TOKEN> ./build/libs/team-f-discord-bot-<version>.jar
+```
