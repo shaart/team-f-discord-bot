@@ -4,6 +4,9 @@ build/
 !**/src/main/**
 !**/src/test/**
 
+# Securing sensitive files
+src/main/resources/application-dev.yml
+
 ### STS ###
 .apt_generated
 .classpath
