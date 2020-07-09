@@ -2,8 +2,10 @@ team:
   f:
     discord:
       bot:
-        token: unknown
+        token:
 
 spring:
+  profiles:
+    active: dev
   liquibase:
     enabled: true
