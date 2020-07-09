@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
     id 'checkstyle'
+    id "org.sonarqube" version "2.8"
 }
 
 group = 'com.github.shaart'
@@ -54,4 +55,10 @@ checkstyleMain {
 }
 checkstyleTest {
     source ='src/test/java'
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "shaart_team-f-discord-bot"
+    }
 }
