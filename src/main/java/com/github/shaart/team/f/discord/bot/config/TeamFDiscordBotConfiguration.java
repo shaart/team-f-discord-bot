@@ -28,6 +28,14 @@ public class TeamFDiscordBotConfiguration {
     return new TeamFDiscordBotListener();
   }
 
+  /**
+   * Java Discord Application bean.
+   *
+   * @param properties application's properties
+   * @param listener   message listener
+   * @return built jda
+   * @throws LoginException if there is a wrong token specified
+   */
   @Bean
   public JDA jda(TeamFDiscordBotProperties properties,
       TeamFDiscordBotListener listener) throws LoginException {
