@@ -23,11 +23,6 @@ public class TeamFDiscordBotConfiguration {
   public static final List<GatewayIntent> GATEWAY_INTENTS = Collections
       .singletonList(GatewayIntent.GUILD_MESSAGES);
 
-  @Bean
-  public TeamFDiscordBotListener teamFDiscordBotListener() {
-    return new TeamFDiscordBotListener();
-  }
-
   /**
    * Java Discord Application bean.
    *
