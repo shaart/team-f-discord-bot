@@ -3,6 +3,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
+logs/
 
 # Securing sensitive files
 src/main/resources/application-dev.yml

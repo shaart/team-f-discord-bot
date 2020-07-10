@@ -13,4 +13,9 @@ public class TeamFDiscordBotProperties {
    * Discord bot's token for work.
    */
   private String token;
+
+  /**
+   * Prefix for a message to became a bot's command. "!" by default.
+   */
+  private String commandPrefix;
 }

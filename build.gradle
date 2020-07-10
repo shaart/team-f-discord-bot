@@ -63,3 +63,13 @@ sonarqube {
         property "sonar.projectKey", "shaart_team-f-discord-bot"
     }
 }
+
+spotbugs {
+    ignoreFailures = true
+}
+spotbugsMain {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}

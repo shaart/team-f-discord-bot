@@ -2,6 +2,7 @@ team:
   f:
     discord:
       bot:
+        command-prefix: '!'
         token:
 
 spring:
@@ -9,3 +10,10 @@ spring:
     active: dev
   liquibase:
     enabled: true
+
+logging:
+  level:
+    ROOT: ERROR
+    org.springframework: ERROR
+    org.springframework.data: ERROR
+    com.github.shaart.team.f.discord.bot: TRACE
