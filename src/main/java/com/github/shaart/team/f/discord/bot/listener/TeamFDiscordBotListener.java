@@ -31,6 +31,10 @@ public class TeamFDiscordBotListener extends ListenerAdapter {
   private final CommandService commandService;
   private final TeamFDiscordBotProperties properties;
 
+  /**
+   * Logic for received messages in channels.
+   * @param event an event
+   */
   @Override
   public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
     if (event.getAuthor().isBot()) {
