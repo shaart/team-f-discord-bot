@@ -8,17 +8,28 @@ import com.github.shaart.team.f.discord.bot.exception.CommandNotFoundException;
 import com.github.shaart.team.f.discord.bot.exception.CommandValidationException;
 import com.github.shaart.team.f.discord.bot.properties.TeamFDiscordBotProperties;
 import com.github.shaart.team.f.discord.bot.service.CommandService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
 public class CommandServiceImpl implements CommandService {
 
-  private final Map<String, BotCommand> commands;
+  private final SortedMap<String, BotCommand> commands;
   private final TeamFDiscordBotProperties properties;
+
+  @Autowired
+  public CommandServiceImpl(Map<String, BotCommand> commands,
+      TeamFDiscordBotProperties properties) {
+    this.commands = new TreeMap<>(commands);
+    this.properties = properties;
+  }
 
   @Override
   public BotCommand findCommand(CommandDto commandDto) {
@@ -43,5 +54,18 @@ public class CommandServiceImpl implements CommandService {
           minArgumentsCount, botCommand.getUsage());
       throw new CommandValidationException(errorMessage);
     }
+  }
+
+  @Override
+  public List<BotCommand> getCommandsPage(int pageNumber, int pageSize) {
+    pageNumber = Math.max(pageNumber, 1);
+    pageSize = Math.max(pageSize, 1);
+    final int n = pageNumber - 1;
+    return commands.entrySet()
+        .stream()
+        .skip(n * pageSize)
+        .limit(pageSize)
+        .map(Entry::getValue)
+        .collect(Collectors.toList());
   }
 }

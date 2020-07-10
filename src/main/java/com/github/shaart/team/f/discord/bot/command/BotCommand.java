@@ -6,6 +6,10 @@ public interface BotCommand {
 
   int minArgumentsCount();
 
+  String getAlias();
+
+  String getDescription();
+
   String getUsage();
 
   void run(MessageReceivedEvent event, String... args);

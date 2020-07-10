@@ -17,4 +17,10 @@ public class CommandDto {
   public String getAlias(String commandPrefix) {
     return getCommand().substring(commandPrefix.length());
   }
+
+  public static CommandDto forName(String commandWithPrefix) {
+    return CommandDto.builder()
+        .command(commandWithPrefix)
+        .build();
+  }
 }

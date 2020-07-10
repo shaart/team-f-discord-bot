@@ -24,6 +24,16 @@ public class PingCommand extends AbstractBotCommand {
   }
 
   @Override
+  public String getAlias() {
+    return PING_COMMAND_ALIAS;
+  }
+
+  @Override
+  public String getDescription() {
+    return "Check bot";
+  }
+
+  @Override
   public String getUsage() {
     return ""
         + "```"

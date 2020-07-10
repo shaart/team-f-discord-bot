@@ -26,6 +26,16 @@ public class RandomCommand extends AbstractBotCommand {
   }
 
   @Override
+  public String getAlias() {
+    return RANDOM_COMMAND_ALIAS;
+  }
+
+  @Override
+  public String getDescription() {
+    return "Get a random number in (min,max)";
+  }
+
+  @Override
   public String getUsage() {
     return ""
         + "```"
