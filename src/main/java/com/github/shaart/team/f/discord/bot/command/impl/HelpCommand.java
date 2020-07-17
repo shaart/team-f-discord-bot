@@ -9,6 +9,7 @@ import com.github.shaart.team.f.discord.bot.component.MessageSender;
 import com.github.shaart.team.f.discord.bot.dto.CommandDto;
 import com.github.shaart.team.f.discord.bot.properties.TeamFDiscordBotProperties;
 import com.github.shaart.team.f.discord.bot.service.CommandService;
+import com.github.shaart.team.f.discord.bot.util.BotNumberUtils;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -100,7 +101,7 @@ public class HelpCommand extends AbstractBotCommand {
     }
 
     final String argument = args[SINGLE_ARGUMENT_INDEX];
-    if (isNumber(argument)) {
+    if (BotNumberUtils.isInteger(argument)) {
       final int pageNumber = Integer.parseInt(argument);
       return commandService.getCommandsPage(pageNumber);
     } else {
@@ -116,7 +117,4 @@ public class HelpCommand extends AbstractBotCommand {
     return Collections.singletonList(command);
   }
 
-  private boolean isNumber(String argument) {
-    return argument.matches("\\d+");
-  }
 }

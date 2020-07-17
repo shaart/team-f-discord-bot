@@ -1,0 +1,6 @@
+team:
+  f:
+    discord:
+      bot:
+        token: test
+        command-prefix: '!'

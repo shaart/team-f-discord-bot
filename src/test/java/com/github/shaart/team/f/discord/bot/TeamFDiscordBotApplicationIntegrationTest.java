@@ -1,10 +1,8 @@
 package com.github.shaart.team.f.discord.bot;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class TeamFDiscordBotApplicationTests {
+class TeamFDiscordBotApplicationIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   void contextLoads() {
