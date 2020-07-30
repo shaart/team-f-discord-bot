@@ -1,5 +1,10 @@
 package com.github.shaart.team.f.discord.bot.listener;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -9,6 +14,11 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
+import ch.qos.logback.core.read.ListAppender;
 import com.github.shaart.team.f.discord.bot.command.BotCommand;
 import com.github.shaart.team.f.discord.bot.component.MessageSender;
 import com.github.shaart.team.f.discord.bot.component.Tokenizer;
@@ -28,6 +38,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class TeamFDiscordBotListenerTest {
@@ -181,5 +194,81 @@ class TeamFDiscordBotListenerTest {
     verify(messageSender, times(ONCE))
         .sendError(messageChannel, expectedMessage);
     verifyNoMoreInteractions(commandService);
+  }
+
+  @Test
+  @DisplayName("Correctly received command has run")
+  void onMessageReceivedRunFoundCommand() {
+    final String testContent = "!random 1 6";
+    when(message.getContentRaw())
+        .thenReturn(testContent);
+
+    final CommandDto commandDto = mock(CommandDto.class);
+    final BotCommand botCommand = mock(BotCommand.class);
+
+    when(tokenizer.toCommand(testContent))
+        .thenReturn(commandDto);
+    when(commandService.findCommand(commandDto))
+        .thenReturn(botCommand);
+
+    final String[] testArguments = new String[]{"1", "6"};
+    when(commandDto.getArguments())
+        .thenReturn(testArguments);
+    doNothing()
+        .when(commandService).validateArguments(botCommand, testArguments);
+    doNothing()
+        .when(botCommand).run(same(messageReceivedEvent), any(String[].class));
+
+    listener.onMessageReceived(messageReceivedEvent);
+
+    verify(botCommand, times(ONCE))
+        .run(messageReceivedEvent, testArguments);
+    verifyNoMoreInteractions(botCommand);
+  }
+
+  @Test
+  @DisplayName("Handle unexpected sender error correctly with log")
+  void onMessageReceivedWithUnexpectedErrorOnRun() {
+    final String testContent = "!random";
+    when(message.getContentRaw())
+        .thenReturn(testContent);
+
+    final CommandDto commandDto = mock(CommandDto.class);
+    final BotCommand botCommand = mock(BotCommand.class);
+
+    when(tokenizer.toCommand(testContent))
+        .thenReturn(commandDto);
+    when(commandService.findCommand(commandDto))
+        .thenReturn(botCommand);
+
+    final String[] testArguments = new String[0];
+    when(commandDto.getArguments())
+        .thenReturn(testArguments);
+
+    doThrow(RuntimeException.class)
+        .when(commandService).validateArguments(botCommand, testArguments);
+    final RuntimeException causeException = new RuntimeException("a cause");
+    final RuntimeException expectedException =
+        new RuntimeException("A test exception message", causeException);
+    doThrow(expectedException)
+        .when(messageSender).sendError(same(messageChannel), anyString());
+
+    final Logger logger = (Logger) LoggerFactory.getLogger(TeamFDiscordBotListener.class);
+    final ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+    listAppender.start();
+    logger.addAppender(listAppender);
+
+    listener.onMessageReceived(messageReceivedEvent);
+
+    final List<ILoggingEvent> eventList = listAppender.list;
+    final int lastIndex = eventList.size() - 1;
+    final ILoggingEvent lastEvent = eventList.get(lastIndex);
+    assertEquals(Level.ERROR, lastEvent.getLevel());
+    assertEquals("An unexpected exception occurred", lastEvent.getMessage());
+
+    final IThrowableProxy throwableProxy = lastEvent.getThrowableProxy();
+    assertEquals(expectedException.getClass().getName(), throwableProxy.getClassName());
+    assertEquals(expectedException.getMessage(), throwableProxy.getMessage());
+    assertEquals(causeException.getMessage(), throwableProxy.getCause().getMessage());
   }
 }
