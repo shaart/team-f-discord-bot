@@ -3,7 +3,8 @@ package com.github.shaart.team.f.discord.bot.listener;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
@@ -22,9 +23,15 @@ import ch.qos.logback.core.read.ListAppender;
 import com.github.shaart.team.f.discord.bot.command.BotCommand;
 import com.github.shaart.team.f.discord.bot.component.MessageSender;
 import com.github.shaart.team.f.discord.bot.component.Tokenizer;
+import com.github.shaart.team.f.discord.bot.dto.ChannelDto;
 import com.github.shaart.team.f.discord.bot.dto.CommandDto;
+import com.github.shaart.team.f.discord.bot.dto.EventDto;
 import com.github.shaart.team.f.discord.bot.exception.CommandNotFoundException;
 import com.github.shaart.team.f.discord.bot.exception.CommandValidationException;
+import com.github.shaart.team.f.discord.bot.mapper.impl.AuthorMapper;
+import com.github.shaart.team.f.discord.bot.mapper.impl.ChannelMapper;
+import com.github.shaart.team.f.discord.bot.mapper.impl.EventMapper;
+import com.github.shaart.team.f.discord.bot.mapper.impl.MessageMapper;
 import com.github.shaart.team.f.discord.bot.properties.TeamFDiscordBotProperties;
 import com.github.shaart.team.f.discord.bot.service.CommandService;
 import net.dv8tion.jda.api.entities.Message;
@@ -35,12 +42,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @ExtendWith(MockitoExtension.class)
 class TeamFDiscordBotListenerTest {
@@ -51,7 +63,7 @@ class TeamFDiscordBotListenerTest {
   private User testUser;
 
   @Mock
-  private MessageChannel messageChannel;
+  private MessageChannel realMessageChannel;
 
   @Mock
   private MessageSender messageSender;
@@ -71,6 +83,9 @@ class TeamFDiscordBotListenerTest {
   @Mock
   private TeamFDiscordBotProperties properties;
 
+  @Spy
+  private EventMapper eventMapper;
+
   @InjectMocks
   private TeamFDiscordBotListener listener;
 
@@ -78,13 +93,11 @@ class TeamFDiscordBotListenerTest {
   void setUp() {
     lenient()
         .when(messageReceivedEvent.getChannel())
-        .thenReturn(messageChannel);
+        .thenReturn(realMessageChannel);
     lenient()
         .when(messageReceivedEvent.getMessage())
         .thenReturn(message);
 
-    when(messageReceivedEvent.getAuthor())
-        .thenAnswer(invocation -> message.getAuthor());
     when(message.getAuthor())
         .thenReturn(testUser);
 
@@ -98,6 +111,12 @@ class TeamFDiscordBotListenerTest {
     lenient()
         .when(properties.getCommandPrefix())
         .thenReturn("!");
+
+    eventMapper.setAuthorMapper(new AuthorMapper());
+    eventMapper.setChannelMapper(new ChannelMapper());
+    eventMapper.setMessageMapper(new MessageMapper());
+//    when(eventMapper.toInternalDto(messageReceivedEvent))
+//        .thenCallRealMethod();
   }
 
   @Test
@@ -149,8 +168,10 @@ class TeamFDiscordBotListenerTest {
 
     listener.onMessageReceived(messageReceivedEvent);
 
+    ArgumentMatcher<ChannelDto> hasRealChannel =
+        channelDto -> Objects.equals(channelDto.getRealChannel(), realMessageChannel);
     verify(messageSender, times(ONCE))
-        .sendError(messageChannel, exceptionMessage);
+        .sendError(argThat(hasRealChannel), eq(exceptionMessage));
     verifyNoMoreInteractions(botCommand);
   }
 
@@ -172,8 +193,10 @@ class TeamFDiscordBotListenerTest {
 
     listener.onMessageReceived(messageReceivedEvent);
 
+    ArgumentMatcher<ChannelDto> hasRealChannel =
+        channelDto -> Objects.equals(channelDto.getRealChannel(), realMessageChannel);
     verify(messageSender, times(ONCE))
-        .sendError(messageChannel, exceptionMessage);
+        .sendError(argThat(hasRealChannel), eq(exceptionMessage));
     verifyNoMoreInteractions(botCommand, commandDto, commandService);
   }
 
@@ -192,7 +215,7 @@ class TeamFDiscordBotListenerTest {
 
     final String expectedMessage = "An unknown error occurred on running command: " + testContent;
     verify(messageSender, times(ONCE))
-        .sendError(messageChannel, expectedMessage);
+        .sendError(any(ChannelDto.class), eq(expectedMessage));
     verifyNoMoreInteractions(commandService);
   }
 
@@ -217,12 +240,14 @@ class TeamFDiscordBotListenerTest {
     doNothing()
         .when(commandService).validateArguments(botCommand, testArguments);
     doNothing()
-        .when(botCommand).run(same(messageReceivedEvent), any(String[].class));
+        .when(botCommand).run(any(EventDto.class), eq(testArguments));
 
     listener.onMessageReceived(messageReceivedEvent);
 
+    final ArgumentCaptor<String> argsCaptor = ArgumentCaptor.forClass(String.class);
     verify(botCommand, times(ONCE))
-        .run(messageReceivedEvent, testArguments);
+        .run(any(EventDto.class), argsCaptor.capture());
+    assertEquals(Arrays.asList(testArguments), argsCaptor.getAllValues());
     verifyNoMoreInteractions(botCommand);
   }
 
@@ -251,7 +276,7 @@ class TeamFDiscordBotListenerTest {
     final RuntimeException expectedException =
         new RuntimeException("A test exception message", causeException);
     doThrow(expectedException)
-        .when(messageSender).sendError(same(messageChannel), anyString());
+        .when(messageSender).sendError(any(ChannelDto.class), anyString());
 
     final Logger logger = (Logger) LoggerFactory.getLogger(TeamFDiscordBotListener.class);
     final ListAppender<ILoggingEvent> listAppender = new ListAppender<>();

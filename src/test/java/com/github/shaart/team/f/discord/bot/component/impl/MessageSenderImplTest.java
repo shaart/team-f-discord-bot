@@ -8,6 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.github.shaart.team.f.discord.bot.dto.ChannelDto;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,15 +19,13 @@ class MessageSenderImplTest {
 
   public static final String ERROR_PREFIX = "[ERROR] ";
   private MessageSenderImpl sender;
-  private MessageChannel channel;
-  private MessageAction messageAction;
+  private ChannelDto channel;
 
   @BeforeEach
   void setUp() {
     sender = new MessageSenderImpl();
 
-    channel = mock(MessageChannel.class);
-    messageAction = mock(MessageAction.class);
+    channel = mock(ChannelDto.class);
   }
 
   @Test
@@ -34,18 +33,13 @@ class MessageSenderImplTest {
     final String message = "A message";
     final String expectedResultMessage = ERROR_PREFIX + message;
 
-    when(channel.sendMessage(anyString()))
-        .thenReturn(messageAction);
     doNothing()
-        .when(messageAction).queue();
+        .when(channel).sendMessage(anyString());
 
     sender.sendError(channel, message);
 
-    //noinspection ResultOfMethodCallIgnored
     verify(channel, times(1))
         .sendMessage(eq(expectedResultMessage));
-    verify(messageAction, times(1))
-        .queue();
   }
 
   @Test
@@ -54,18 +48,13 @@ class MessageSenderImplTest {
     final String expectedResultMessage =
         ERROR_PREFIX + "Send message called but message wasn't produced. Please check the logs.";
 
-    when(channel.sendMessage(anyString()))
-        .thenReturn(messageAction);
     doNothing()
-        .when(messageAction).queue();
+        .when(channel).sendMessage(anyString());
 
     sender.sendMessage(channel, null);
 
-    //noinspection ResultOfMethodCallIgnored
     verify(channel, times(1))
         .sendMessage(eq(expectedResultMessage));
-    verify(messageAction, times(1))
-        .queue();
   }
 
   @Test
@@ -80,18 +69,13 @@ class MessageSenderImplTest {
     final String trimmedWithoutPostfix = testMessage.substring(0, 2000 - postfix.length());
     final String expectedResultMessage = trimmedWithoutPostfix + postfix;
 
-    when(channel.sendMessage(anyString()))
-        .thenReturn(messageAction);
     doNothing()
-        .when(messageAction).queue();
+        .when(channel).sendMessage(anyString());
 
     sender.sendMessage(channel, testMessage);
 
-    //noinspection ResultOfMethodCallIgnored
     verify(channel, times(1))
         .sendMessage(eq(expectedResultMessage));
-    verify(messageAction, times(1))
-        .queue();
   }
 
   @Test
@@ -100,17 +84,12 @@ class MessageSenderImplTest {
     final String message = "A message";
     final String expectedResultMessage = ERROR_PREFIX + message;
 
-    when(channel.sendMessage(anyString()))
-        .thenReturn(messageAction);
     doNothing()
-        .when(messageAction).queue();
+        .when(channel).sendMessage(anyString());
 
     sender.sendError(channel, message);
 
-    //noinspection ResultOfMethodCallIgnored
     verify(channel, times(1))
         .sendMessage(eq(expectedResultMessage));
-    verify(messageAction, times(1))
-        .queue();
   }
 }
