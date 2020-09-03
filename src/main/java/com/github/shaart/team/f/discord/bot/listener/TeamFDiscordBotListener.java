@@ -37,6 +37,14 @@ public class TeamFDiscordBotListener extends ListenerAdapter {
    */
   @Override
   public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+    try {
+      handleEvent(event);
+    } catch (Exception e) {
+      log.error("An unexpected exception occurred", e);
+    }
+  }
+
+  private void handleEvent(@Nonnull MessageReceivedEvent event) {
     if (event.getAuthor().isBot()) {
       return;
     }
