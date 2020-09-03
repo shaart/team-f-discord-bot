@@ -1,6 +1,6 @@
 package com.github.shaart.team.f.discord.bot.command;
 
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import com.github.shaart.team.f.discord.bot.dto.EventDto;
 
 /**
  * A command to be processed by bot.
@@ -39,5 +39,5 @@ public interface BotCommand {
    * @param event a message event
    * @param args  parsed command's arguments if present (or empty array if none)
    */
-  void run(MessageReceivedEvent event, String... args);
+  void run(EventDto event, String... args);
 }

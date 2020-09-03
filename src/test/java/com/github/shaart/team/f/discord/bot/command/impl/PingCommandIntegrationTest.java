@@ -6,7 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.github.shaart.team.f.discord.bot.AbstractIntegrationTest;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import com.github.shaart.team.f.discord.bot.dto.ChannelDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,6 @@ class PingCommandIntegrationTest extends AbstractIntegrationTest {
     pingCommand.run(messageReceivedEvent);
 
     verify(messageSender, times(ONCE))
-        .sendMessage(any(MessageChannel.class), eq("Pong!"));
+        .sendMessage(any(ChannelDto.class), eq("Pong!"));
   }
 }

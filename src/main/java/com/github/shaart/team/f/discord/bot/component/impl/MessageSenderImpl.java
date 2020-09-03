@@ -3,8 +3,8 @@ package com.github.shaart.team.f.discord.bot.component.impl;
 import static java.util.Objects.isNull;
 
 import com.github.shaart.team.f.discord.bot.component.MessageSender;
+import com.github.shaart.team.f.discord.bot.dto.ChannelDto;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -17,7 +17,7 @@ public class MessageSenderImpl implements MessageSender {
   private static final String OVERFLOW_POSTFIX = "..";
 
   @Override
-  public void sendMessage(MessageChannel channel, String message) {
+  public void sendMessage(ChannelDto channel, String message) {
     if (isNull(message)) {
       sendError(channel, NO_MESSAGE_PRODUCED_ERROR);
       return;
@@ -26,11 +26,11 @@ public class MessageSenderImpl implements MessageSender {
   }
 
   @Override
-  public void sendError(MessageChannel channel, String message) {
+  public void sendError(ChannelDto channel, String message) {
     send(channel, "[ERROR] " + message);
   }
 
-  private void send(MessageChannel channel, String message) {
+  private void send(ChannelDto channel, String message) {
     String resultMessage;
     if (message.length() > DISCORD_MESSAGE_LENGTH_LIMIT) {
       log.warn("A message is larger than {} symbols. It will be trimmed. "
@@ -42,6 +42,6 @@ public class MessageSenderImpl implements MessageSender {
     } else {
       resultMessage = message;
     }
-    channel.sendMessage(resultMessage).queue();
+    channel.sendMessage(resultMessage);
   }
 }

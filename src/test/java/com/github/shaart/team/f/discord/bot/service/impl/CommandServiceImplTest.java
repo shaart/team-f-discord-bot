@@ -283,9 +283,11 @@ class CommandServiceImplTest {
       final String commandAlias = prefix + i;
 
       final BotCommand command = mock(BotCommand.class);
+      final String toStringCommand = String.format("Command with alias = '%s' and hash = %d",
+          commandAlias, command.hashCode());
       lenient()
           .when(command.toString())
-          .thenReturn("Command with alias = '" + commandAlias + "' and hash = " + command.hashCode());
+          .thenReturn(toStringCommand);
 
       commands.put(commandAlias, command);
       if (startIndex <= i && i <= endIndex) {

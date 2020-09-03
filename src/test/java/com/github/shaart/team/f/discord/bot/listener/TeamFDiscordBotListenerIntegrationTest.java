@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 
 import com.github.shaart.team.f.discord.bot.AbstractIntegrationTest;
 import com.github.shaart.team.f.discord.bot.command.BotCommand;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import com.github.shaart.team.f.discord.bot.dto.ChannelDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +35,10 @@ class TeamFDiscordBotListenerIntegrationTest extends AbstractIntegrationTest {
     when(message.getContentRaw())
         .thenReturn("!ping");
 
-    listener.onMessageReceived(messageReceivedEvent);
+    listener.onMessageReceived(realMessageReceivedEvent);
 
     verify(messageSender, only())
-        .sendMessage(any(MessageChannel.class), eq("Pong!"));
+        .sendMessage(any(ChannelDto.class), eq("Pong!"));
   }
 
   @Test
@@ -49,10 +49,10 @@ class TeamFDiscordBotListenerIntegrationTest extends AbstractIntegrationTest {
     when(message.getContentRaw())
         .thenReturn("!ping ab 12");
 
-    listener.onMessageReceived(messageReceivedEvent);
+    listener.onMessageReceived(realMessageReceivedEvent);
 
     verify(messageSender, only())
-        .sendMessage(any(MessageChannel.class), eq("Pong!"));
+        .sendMessage(any(ChannelDto.class), eq("Pong!"));
   }
 
   @Test
@@ -63,10 +63,10 @@ class TeamFDiscordBotListenerIntegrationTest extends AbstractIntegrationTest {
     when(message.getContentRaw())
         .thenReturn("!help");
 
-    listener.onMessageReceived(messageReceivedEvent);
+    listener.onMessageReceived(realMessageReceivedEvent);
 
     verify(messageSender, only())
-        .sendMessage(any(MessageChannel.class), contains("help - Commands help"));
+        .sendMessage(any(ChannelDto.class), contains("help - Commands help"));
   }
 
   @Test
@@ -77,12 +77,12 @@ class TeamFDiscordBotListenerIntegrationTest extends AbstractIntegrationTest {
     when(message.getContentRaw())
         .thenReturn("!help random");
 
-    listener.onMessageReceived(messageReceivedEvent);
+    listener.onMessageReceived(realMessageReceivedEvent);
 
     final BotCommand commandRandom = commands.get("random");
 
     verify(messageSender, only())
-        .sendMessage(any(MessageChannel.class), contains(commandRandom.getUsage()));
+        .sendMessage(any(ChannelDto.class), contains(commandRandom.getUsage()));
   }
 
   @Test
@@ -93,9 +93,9 @@ class TeamFDiscordBotListenerIntegrationTest extends AbstractIntegrationTest {
     when(message.getContentRaw())
         .thenReturn("!random 1 5");
 
-    listener.onMessageReceived(messageReceivedEvent);
+    listener.onMessageReceived(realMessageReceivedEvent);
 
     verify(messageSender, only())
-        .sendMessage(any(MessageChannel.class), matches(MONOFORMATTED_ONE_DIGIT_FROM_ONE_TO_FIVE));
+        .sendMessage(any(ChannelDto.class), matches(MONOFORMATTED_ONE_DIGIT_FROM_ONE_TO_FIVE));
   }
 }

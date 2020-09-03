@@ -4,14 +4,16 @@ import com.github.shaart.team.f.discord.bot.command.BotCommand;
 import com.github.shaart.team.f.discord.bot.component.MessageSender;
 import com.github.shaart.team.f.discord.bot.component.Tokenizer;
 import com.github.shaart.team.f.discord.bot.dto.CommandDto;
+import com.github.shaart.team.f.discord.bot.dto.ChannelDto;
+import com.github.shaart.team.f.discord.bot.dto.EventDto;
+import com.github.shaart.team.f.discord.bot.dto.MessageDto;
 import com.github.shaart.team.f.discord.bot.exception.CommandNotFoundException;
 import com.github.shaart.team.f.discord.bot.exception.CommandValidationException;
+import com.github.shaart.team.f.discord.bot.mapper.impl.EventMapper;
 import com.github.shaart.team.f.discord.bot.properties.TeamFDiscordBotProperties;
 import com.github.shaart.team.f.discord.bot.service.CommandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ public class TeamFDiscordBotListener extends ListenerAdapter {
   private final MessageSender messageSender;
   private final CommandService commandService;
   private final TeamFDiscordBotProperties properties;
+  private final EventMapper eventMapper;
 
   /**
    * Logic for received messages in channels.
@@ -44,25 +47,27 @@ public class TeamFDiscordBotListener extends ListenerAdapter {
     }
   }
 
-  private void handleEvent(@Nonnull MessageReceivedEvent event) {
+  private void handleEvent(@Nonnull MessageReceivedEvent receivedEvent) {
+    EventDto event = eventMapper.toInternalDto(receivedEvent);
     if (event.getAuthor().isBot()) {
       return;
     }
-    Message message = event.getMessage();
-    String content = message.getContentRaw();
+    MessageDto message = event.getMessage();
+    String content = event.getContent();
     if (!content.startsWith(properties.getCommandPrefix())) {
       return;
     }
 
-    log.debug("Got a message from {}", message.getAuthor().getName());
+    log.debug("Got a message from {}", message.getAuthorName());
     log.trace("The message is: '{}'", content);
-    MessageChannel channel = event.getChannel();
+    final ChannelDto channel = event.getChannel();
     try {
       final CommandDto commandDto = tokenizer.toCommand(content);
       final BotCommand botCommand = commandService.findCommand(commandDto);
       final String[] args = commandDto.getArguments();
 
       commandService.validateArguments(botCommand, args);
+
       botCommand.run(event, args);
     } catch (CommandValidationException | CommandNotFoundException e) {
       log.error(NO_MESSAGE, e);
