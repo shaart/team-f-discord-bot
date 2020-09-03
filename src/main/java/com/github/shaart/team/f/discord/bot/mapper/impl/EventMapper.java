@@ -5,8 +5,6 @@ import com.github.shaart.team.f.discord.bot.dto.ChannelDto;
 import com.github.shaart.team.f.discord.bot.dto.EventDto;
 import com.github.shaart.team.f.discord.bot.dto.MessageDto;
 import com.github.shaart.team.f.discord.bot.mapper.DtoMapper;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
