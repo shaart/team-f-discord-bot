@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,8 +41,11 @@ public class TeamFDiscordBotConfiguration {
       throw new IllegalStateException("Bot's token must be specified");
     }
 
+    final String activityStatus = String.format("%shelp",
+        properties.getCommandPrefix());
     return JDABuilder.create(botToken, GATEWAY_INTENTS)
         .setStatus(OnlineStatus.ONLINE)
+        .setActivity(Activity.listening(activityStatus))
         .addEventListeners(listener)
         .build();
   }
