@@ -33,7 +33,7 @@ public class MessageSenderImpl implements MessageSender {
   private void send(ChannelDto channel, String message) {
     String resultMessage;
     if (message.length() > DISCORD_MESSAGE_LENGTH_LIMIT) {
-      log.warn("A message is larger than {} symbols. It will be trimmed. "
+      log.trace("A message is larger than {} symbols. It will be trimmed. "
               + "Initial message (length = {}): {}",
           DISCORD_MESSAGE_LENGTH_LIMIT, message.length(), message);
       final int endIndex = DISCORD_MESSAGE_LENGTH_LIMIT - OVERFLOW_POSTFIX.length();
@@ -42,6 +42,7 @@ public class MessageSenderImpl implements MessageSender {
     } else {
       resultMessage = message;
     }
+    log.info("Send response message: {}", resultMessage);
     channel.sendMessage(resultMessage);
   }
 }

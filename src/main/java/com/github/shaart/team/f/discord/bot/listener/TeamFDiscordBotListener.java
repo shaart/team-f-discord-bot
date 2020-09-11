@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +42,9 @@ public class TeamFDiscordBotListener extends ListenerAdapter {
   @Override
   public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
     try {
+      MDC.put("event_id", event.getMessageId());
       handleEvent(event);
+      MDC.remove("event_id");
     } catch (Exception e) {
       log.error("An unexpected exception occurred", e);
     }
@@ -58,7 +61,8 @@ public class TeamFDiscordBotListener extends ListenerAdapter {
       return;
     }
 
-    log.debug("Got a message from {}", message.getAuthorName());
+    log.info("Got a message from '{}' at '{}' ({}) in channel '{}'", message.getAuthorName(),
+        event.getServerName(), event.getServerId(), event.getChannel().getName());
     log.trace("The message is: '{}'", content);
     final ChannelDto channel = event.getChannel();
     try {
