@@ -6,13 +6,12 @@
 
   <appender name="json"
     class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-      <jsonFormatter
-        class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
-        <prettyPrint>true</prettyPrint>
-      </jsonFormatter>
-      <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
-    </layout>
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <includeContext>true</includeContext>
+      <provider class="net.logstash.logback.composite.loggingevent.ArgumentsJsonProvider">
+        <includeNonStructuredArguments>true</includeNonStructuredArguments>
+      </provider>
+    </encoder>
   </appender>
 
   <appender name="RollingFile"

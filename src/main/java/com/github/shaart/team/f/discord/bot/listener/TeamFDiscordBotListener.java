@@ -1,5 +1,7 @@
 package com.github.shaart.team.f.discord.bot.listener;
 
+import static net.logstash.logback.marker.Markers.append;
+
 import com.github.shaart.team.f.discord.bot.command.BotCommand;
 import com.github.shaart.team.f.discord.bot.component.MessageSender;
 import com.github.shaart.team.f.discord.bot.component.Tokenizer;
@@ -28,6 +30,7 @@ import javax.annotation.Nonnull;
 public class TeamFDiscordBotListener extends ListenerAdapter {
 
   public static final String NO_MESSAGE = "";
+  public static final String MDC_EVENT_ID_FIELD = "global_event_id";
 
   private final Tokenizer tokenizer;
   private final MessageSender messageSender;
@@ -42,9 +45,9 @@ public class TeamFDiscordBotListener extends ListenerAdapter {
   @Override
   public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
     try {
-      MDC.put("event_id", event.getMessageId());
+      MDC.put(MDC_EVENT_ID_FIELD, event.getMessageId());
       handleEvent(event);
-      MDC.remove("event_id");
+      MDC.remove(MDC_EVENT_ID_FIELD);
     } catch (Exception e) {
       log.error("An unexpected exception occurred", e);
     }
@@ -64,6 +67,16 @@ public class TeamFDiscordBotListener extends ListenerAdapter {
     log.info("Got a message from '{}' at '{}' ({}) in channel '{}'", message.getAuthorName(),
         event.getServerName(), event.getServerId(), event.getChannel().getName());
     log.trace("The message is: '{}'", content);
+
+    //TODO try https://github.com/logstash/logstash-logback-encoder/issues/264#issuecomment-366346274
+    // cool thing https://github.com/logstash/logstash-logback-encoder#context-fields
+    // about providers http://development.wombatsecurity.com/development/2018/12/20/json-logging-for-spring-boot/
+    // if needed another @Log https://projectlombok.org/features/log
+    log.info(append("author_name", message.getAuthorName())
+            .and(append("server_name", event.getServerName()))
+            .and(append("server_id", event.getServerId()))
+            .and(append("channel_name", event.getChannel().getName())),
+        "Got a message from user at server (with server id) in channel");
     final ChannelDto channel = event.getChannel();
     try {
       final CommandDto commandDto = tokenizer.toCommand(content);

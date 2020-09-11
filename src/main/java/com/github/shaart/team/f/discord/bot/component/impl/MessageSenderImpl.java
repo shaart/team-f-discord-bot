@@ -1,6 +1,7 @@
 package com.github.shaart.team.f.discord.bot.component.impl;
 
 import static java.util.Objects.isNull;
+import static net.logstash.logback.argument.StructuredArguments.value;
 
 import com.github.shaart.team.f.discord.bot.component.MessageSender;
 import com.github.shaart.team.f.discord.bot.dto.ChannelDto;
@@ -42,7 +43,7 @@ public class MessageSenderImpl implements MessageSender {
     } else {
       resultMessage = message;
     }
-    log.info("Send response message: {}", resultMessage);
+    log.info("Send response message: {}", value("message", resultMessage));
     channel.sendMessage(resultMessage);
   }
 }
