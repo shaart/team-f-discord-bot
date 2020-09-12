@@ -1,25 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
 
   <property name="LOG_DIRECTORY" value="logs"/>
   <property name="LOG_FILE_NAME" value="team-f-discord-bot"/>
 
   <appender name="json"
     class="ch.qos.logback.core.ConsoleAppender">
-    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-      <includeContext>true</includeContext>
-      <provider class="net.logstash.logback.composite.loggingevent.ArgumentsJsonProvider">
-        <includeNonStructuredArguments>true</includeNonStructuredArguments>
-      </provider>
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <!-- Write a @timestamp field containing the LoggingEvent's timestamp -->
+        <timestamp/>
+        <!-- Write a @version field containing a value of 1 -->
+        <version/>
+        <!-- MDC (context) fields -->
+        <mdc/>
+        <pattern>
+          <pattern>
+            {
+            "logger": "%logger",
+            "level": "%level",
+            "thread": "%thread"
+            }
+          </pattern>
+        </pattern>
+        <!-- Write a raw_message field containing the raw/unformatted LoggingEvent message -->
+        <rawMessage>
+          <fieldName>raw_message</fieldName>
+        </rawMessage>
+        <!-- StructuredArgument and Marker support -->
+        <provider class="net.logstash.logback.composite.loggingevent.ArgumentsJsonProvider">
+          <includeNonStructuredArguments>true</includeNonStructuredArguments>
+          <fieldNames>
+            <message>[ignore]</message>
+          </fieldNames>
+        </provider>
+        <logstashMarkers/>
+        <!-- Write a "stack_trace" field -->
+        <stackTrace/>
+      </providers>
     </encoder>
   </appender>
 
   <appender name="RollingFile"
     class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOG_DIRECTORY}/${LOG_FILE_NAME}.log</file>
-    <encoder
-      class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <!-- Write a @timestamp field containing the LoggingEvent's timestamp -->
+        <timestamp/>
+        <!-- Write a @version field containing a value of 1 -->
+        <version/>
+        <!-- MDC (context) fields -->
+        <mdc/>
+        <pattern>
+          <pattern>
+            {
+            "logger": "%logger",
+            "level": "%level",
+            "thread": "%thread"
+            }
+          </pattern>
+        </pattern>
+        <!-- Write a raw_message field containing the raw/unformatted LoggingEvent message -->
+        <rawMessage>
+          <fieldName>raw_message</fieldName>
+        </rawMessage>
+        <!-- StructuredArgument and Marker support -->
+        <provider class="net.logstash.logback.composite.loggingevent.ArgumentsJsonProvider">
+          <includeNonStructuredArguments>true</includeNonStructuredArguments>
+          <fieldNames>
+            <message>[ignore]</message>
+          </fieldNames>
+        </provider>
+        <logstashMarkers/>
+        <!-- Write a "stack_trace" field -->
+        <stackTrace/>
+      </providers>
     </encoder>
 
     <rollingPolicy
