@@ -1,15 +1,19 @@
 package com.github.shaart.team.f.discord.bot.command.impl;
 
+import static net.logstash.logback.marker.Markers.append;
+
 import com.github.shaart.team.f.discord.bot.command.AbstractBotCommand;
 import com.github.shaart.team.f.discord.bot.component.MessageSender;
 import com.github.shaart.team.f.discord.bot.dto.ChannelDto;
 import com.github.shaart.team.f.discord.bot.dto.EventDto;
 import com.github.shaart.team.f.discord.bot.properties.TeamFDiscordBotProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+@Slf4j
 @Component(RandomCommand.RANDOM_COMMAND_ALIAS)
 public class RandomCommand extends AbstractBotCommand {
 
@@ -49,9 +53,16 @@ public class RandomCommand extends AbstractBotCommand {
   public void run(EventDto event, String... args) {
     final ChannelDto channel = event.getChannel();
 
-    final int mix = Integer.parseInt(args[0]);
+    final int min = Integer.parseInt(args[0]);
     final int max = Integer.parseInt(args[1]);
-    final int randomNumber = ThreadLocalRandom.current().nextInt(mix, max);
+    log.trace(append("min_number", min)
+            .and(append("max_number", max)),
+        "Min and max borders of random number is");
+
+    final int randomNumber = ThreadLocalRandom.current().nextInt(min, max);
+
+    log.debug(append("random_number", randomNumber), "Result random number is");
+
     messageSender.sendMessage(channel, "`" + randomNumber + "`");
   }
 }

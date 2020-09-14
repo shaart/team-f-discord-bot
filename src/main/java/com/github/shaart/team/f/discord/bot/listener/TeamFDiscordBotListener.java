@@ -5,8 +5,8 @@ import static net.logstash.logback.marker.Markers.append;
 import com.github.shaart.team.f.discord.bot.command.BotCommand;
 import com.github.shaart.team.f.discord.bot.component.MessageSender;
 import com.github.shaart.team.f.discord.bot.component.Tokenizer;
-import com.github.shaart.team.f.discord.bot.dto.CommandDto;
 import com.github.shaart.team.f.discord.bot.dto.ChannelDto;
+import com.github.shaart.team.f.discord.bot.dto.CommandDto;
 import com.github.shaart.team.f.discord.bot.dto.EventDto;
 import com.github.shaart.team.f.discord.bot.dto.MessageDto;
 import com.github.shaart.team.f.discord.bot.exception.CommandNotFoundException;
@@ -40,6 +40,7 @@ public class TeamFDiscordBotListener extends ListenerAdapter {
 
   /**
    * Logic for received messages in channels.
+   *
    * @param event an event
    */
   @Override
@@ -80,9 +81,15 @@ public class TeamFDiscordBotListener extends ListenerAdapter {
     final ChannelDto channel = event.getChannel();
     try {
       final CommandDto commandDto = tokenizer.toCommand(content);
+      log.info(append("command_name", commandDto.getAlias(properties.getCommandPrefix()))
+              .and(append("command_arguments", commandDto.getArguments())),
+          "Searching for received command with name and arguments");
       final BotCommand botCommand = commandService.findCommand(commandDto);
       final String[] args = commandDto.getArguments();
 
+      log.debug(append("command_name", commandDto.getAlias(properties.getCommandPrefix()))
+              .and(append("command_arguments", commandDto.getArguments())),
+          "Validating command name");
       commandService.validateArguments(botCommand, args);
 
       botCommand.run(event, args);
