@@ -34,6 +34,7 @@ import com.github.shaart.team.f.discord.bot.mapper.impl.EventMapper;
 import com.github.shaart.team.f.discord.bot.mapper.impl.MessageMapper;
 import com.github.shaart.team.f.discord.bot.properties.TeamFDiscordBotProperties;
 import com.github.shaart.team.f.discord.bot.service.CommandService;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -44,6 +45,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -65,6 +67,9 @@ class TeamFDiscordBotListenerTest {
 
   @Mock
   private MessageChannel realMessageChannel;
+
+  @Mock
+  private Guild guild;
 
   @Mock
   private MessageSender messageSender;
@@ -102,6 +107,12 @@ class TeamFDiscordBotListenerTest {
     lenient()
         .when(messageReceivedEvent.getMessage())
         .thenReturn(message);
+    lenient()
+        .when(messageReceivedEvent.getGuild())
+        .thenReturn(guild);
+    lenient()
+        .when(guild.getName())
+        .thenReturn("Local Test Guild");
 
     when(message.getAuthor())
         .thenReturn(testUser);
@@ -188,6 +199,9 @@ class TeamFDiscordBotListenerTest {
         .thenReturn(testContent);
 
     final CommandDto commandDto = mock(CommandDto.class);
+    String[] noArgs = new String[0];
+    when(commandDto.getArguments())
+        .thenReturn(noArgs);
     final BotCommand botCommand = mock(BotCommand.class);
 
     when(tokenizer.toCommand(testContent))
@@ -202,6 +216,11 @@ class TeamFDiscordBotListenerTest {
         channelDto -> Objects.equals(channelDto.getName(), realMessageChannel.getName());
     verify(messageSender, times(ONCE))
         .sendError(argThat(hasRealChannel), eq(exceptionMessage));
+    //noinspection ResultOfMethodCallIgnored
+    verify(commandDto)
+        .getArguments();
+    verify(commandDto)
+        .getAlias("!");
     verifyNoMoreInteractions(botCommand, commandDto, commandService);
   }
 
