@@ -8,6 +8,8 @@ team:
 spring:
   profiles:
     active: dev
+  main:
+    banner-mode: off
   liquibase:
     enabled: true
 

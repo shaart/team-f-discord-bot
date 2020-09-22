@@ -8,6 +8,7 @@ import com.github.shaart.team.f.discord.bot.dto.ChannelDto;
 import com.github.shaart.team.f.discord.bot.dto.EventDto;
 import com.github.shaart.team.f.discord.bot.dto.MessageDto;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -35,24 +36,20 @@ public abstract class AbstractIntegrationTest {
 
   @Mock
   protected EventDto messageReceivedEvent;
-
   @Mock
   protected ChannelDto channelDto;
-
   @Mock
   protected AuthorDto authorDto;
-
   @Mock
   protected MessageDto messageDto;
-
   @Mock
   protected User testUser;
-
   @Mock
   protected MessageChannel messageChannel;
-
   @Mock
   protected Message message;
+  @Mock
+  private Guild guild;
 
   /**
    * Global init method.
@@ -63,8 +60,14 @@ public abstract class AbstractIntegrationTest {
         .thenReturn(messageChannel);
     when(realMessageReceivedEvent.getMessage())
         .thenReturn(message);
+    when(realMessageReceivedEvent.getMessageId())
+        .thenReturn("9876543210");
     when(realMessageReceivedEvent.getAuthor())
         .thenAnswer(invocation -> message.getAuthor());
+    when(realMessageReceivedEvent.getGuild())
+        .thenReturn(guild);
+    when(guild.getName())
+        .thenReturn("Local Test Guild");
 
     when(messageReceivedEvent.getChannel())
         .thenReturn(channelDto);

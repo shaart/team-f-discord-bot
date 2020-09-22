@@ -34,6 +34,7 @@ import com.github.shaart.team.f.discord.bot.mapper.impl.EventMapper;
 import com.github.shaart.team.f.discord.bot.mapper.impl.MessageMapper;
 import com.github.shaart.team.f.discord.bot.properties.TeamFDiscordBotProperties;
 import com.github.shaart.team.f.discord.bot.service.CommandService;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -44,6 +45,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -58,12 +60,16 @@ import java.util.Objects;
 class TeamFDiscordBotListenerTest {
 
   private static final int ONCE = 1;
+  private static final String TEST_CHANNEL_NAME = "test-channel-name";
 
   @Mock
   private User testUser;
 
   @Mock
   private MessageChannel realMessageChannel;
+
+  @Mock
+  private Guild guild;
 
   @Mock
   private MessageSender messageSender;
@@ -95,8 +101,18 @@ class TeamFDiscordBotListenerTest {
         .when(messageReceivedEvent.getChannel())
         .thenReturn(realMessageChannel);
     lenient()
+        .when(realMessageChannel.getName())
+        .thenReturn(TEST_CHANNEL_NAME);
+
+    lenient()
         .when(messageReceivedEvent.getMessage())
         .thenReturn(message);
+    lenient()
+        .when(messageReceivedEvent.getGuild())
+        .thenReturn(guild);
+    lenient()
+        .when(guild.getName())
+        .thenReturn("Local Test Guild");
 
     when(message.getAuthor())
         .thenReturn(testUser);
@@ -169,7 +185,7 @@ class TeamFDiscordBotListenerTest {
     listener.onMessageReceived(messageReceivedEvent);
 
     ArgumentMatcher<ChannelDto> hasRealChannel =
-        channelDto -> Objects.equals(channelDto.getRealChannel(), realMessageChannel);
+        channelDto -> Objects.equals(channelDto.getName(), realMessageChannel.getName());
     verify(messageSender, times(ONCE))
         .sendError(argThat(hasRealChannel), eq(exceptionMessage));
     verifyNoMoreInteractions(botCommand);
@@ -183,6 +199,9 @@ class TeamFDiscordBotListenerTest {
         .thenReturn(testContent);
 
     final CommandDto commandDto = mock(CommandDto.class);
+    String[] noArgs = new String[0];
+    when(commandDto.getArguments())
+        .thenReturn(noArgs);
     final BotCommand botCommand = mock(BotCommand.class);
 
     when(tokenizer.toCommand(testContent))
@@ -194,9 +213,14 @@ class TeamFDiscordBotListenerTest {
     listener.onMessageReceived(messageReceivedEvent);
 
     ArgumentMatcher<ChannelDto> hasRealChannel =
-        channelDto -> Objects.equals(channelDto.getRealChannel(), realMessageChannel);
+        channelDto -> Objects.equals(channelDto.getName(), realMessageChannel.getName());
     verify(messageSender, times(ONCE))
         .sendError(argThat(hasRealChannel), eq(exceptionMessage));
+    //noinspection ResultOfMethodCallIgnored
+    verify(commandDto)
+        .getArguments();
+    verify(commandDto)
+        .getAlias("!");
     verifyNoMoreInteractions(botCommand, commandDto, commandService);
   }
 
