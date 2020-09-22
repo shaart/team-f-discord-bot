@@ -69,10 +69,6 @@ public class TeamFDiscordBotListener extends ListenerAdapter {
         event.getServerName(), event.getServerId(), event.getChannel().getName());
     log.trace("The message is: '{}'", content);
 
-    //TODO try https://github.com/logstash/logstash-logback-encoder/issues/264#issuecomment-366346274
-    // cool thing https://github.com/logstash/logstash-logback-encoder#context-fields
-    // about providers http://development.wombatsecurity.com/development/2018/12/20/json-logging-for-spring-boot/
-    // if needed another @Log https://projectlombok.org/features/log
     log.info(append("author_name", message.getAuthorName())
             .and(append("server_name", event.getServerName()))
             .and(append("server_id", event.getServerId()))
