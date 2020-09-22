@@ -58,6 +58,7 @@ import java.util.Objects;
 class TeamFDiscordBotListenerTest {
 
   private static final int ONCE = 1;
+  private static final String TEST_CHANNEL_NAME = "test-channel-name";
 
   @Mock
   private User testUser;
@@ -94,6 +95,10 @@ class TeamFDiscordBotListenerTest {
     lenient()
         .when(messageReceivedEvent.getChannel())
         .thenReturn(realMessageChannel);
+    lenient()
+        .when(realMessageChannel.getName())
+        .thenReturn(TEST_CHANNEL_NAME);
+
     lenient()
         .when(messageReceivedEvent.getMessage())
         .thenReturn(message);
@@ -169,7 +174,7 @@ class TeamFDiscordBotListenerTest {
     listener.onMessageReceived(messageReceivedEvent);
 
     ArgumentMatcher<ChannelDto> hasRealChannel =
-        channelDto -> Objects.equals(channelDto.getRealChannel(), realMessageChannel);
+        channelDto -> Objects.equals(channelDto.getName(), realMessageChannel.getName());
     verify(messageSender, times(ONCE))
         .sendError(argThat(hasRealChannel), eq(exceptionMessage));
     verifyNoMoreInteractions(botCommand);
@@ -194,7 +199,7 @@ class TeamFDiscordBotListenerTest {
     listener.onMessageReceived(messageReceivedEvent);
 
     ArgumentMatcher<ChannelDto> hasRealChannel =
-        channelDto -> Objects.equals(channelDto.getRealChannel(), realMessageChannel);
+        channelDto -> Objects.equals(channelDto.getName(), realMessageChannel.getName());
     verify(messageSender, times(ONCE))
         .sendError(argThat(hasRealChannel), eq(exceptionMessage));
     verifyNoMoreInteractions(botCommand, commandDto, commandService);
