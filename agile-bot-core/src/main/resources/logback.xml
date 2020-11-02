@@ -3,7 +3,7 @@
   <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
 
   <property name="LOG_DIRECTORY" value="logs"/>
-  <property name="LOG_FILE_NAME" value="team-f-discord-bot"/>
+  <property name="LOG_FILE_NAME" value="agile-bot-core"/>
 
   <appender name="json"
     class="ch.qos.logback.core.ConsoleAppender">

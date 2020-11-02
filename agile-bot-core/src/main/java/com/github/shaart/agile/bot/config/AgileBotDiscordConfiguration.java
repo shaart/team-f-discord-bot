@@ -19,7 +19,7 @@ import javax.security.auth.login.LoginException;
 
 @Configuration
 @RequiredArgsConstructor
-public class TeamFDiscordBotConfiguration {
+public class AgileBotDiscordConfiguration {
 
   public static final List<GatewayIntent> GATEWAY_INTENTS = Collections
       .singletonList(GatewayIntent.GUILD_MESSAGES);

@@ -13,9 +13,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @ConfigurationPropertiesScan("com.github.shaart.agile.bot.properties")
-public class TeamFDiscordBotApplication {
+public class AgileBotCoreApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(TeamFDiscordBotApplication.class, args);
+    SpringApplication.run(AgileBotCoreApplication.class, args);
   }
 }
