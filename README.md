@@ -20,5 +20,5 @@ Team's bot for discord. Helps to manage team's events.
 1. Build the application.
 2. Run the application.
 ```shell script
-java -jar -Dteam.f.discord.bot.token="<TOKEN>" ./build/libs/team-f-discord-bot-<version>.jar
+java -jar -Dagile.bot.discord.token="<TOKEN>" ./build/libs/team-f-discord-bot-<version>.jar
 ```

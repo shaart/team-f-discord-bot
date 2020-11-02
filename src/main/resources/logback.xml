@@ -98,7 +98,7 @@
     <appender-ref ref="json"/>
   </root>
 
-  <logger name="com.github.shaart.team.f.discord.bot" level="trace" additivity="false">
+  <logger name="com.github.shaart.agile.bot" level="trace" additivity="false">
     <appender-ref ref="RollingFile"/>
     <appender-ref ref="json"/>
   </logger>

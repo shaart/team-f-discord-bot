@@ -1,9 +1,8 @@
-team:
-  f:
+agile:
+  bot:
     discord:
-      bot:
-        command-prefix: '!'
-        token:
+      command-prefix: '!'
+      token:
 
 spring:
   profiles:
@@ -18,4 +17,4 @@ logging:
     ROOT: ERROR
     org.springframework: ERROR
     org.springframework.data: ERROR
-    com.github.shaart.team.f.discord.bot: TRACE
+    com.github.shaart.agile.bot: TRACE
