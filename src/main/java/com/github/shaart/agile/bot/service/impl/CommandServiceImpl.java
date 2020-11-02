@@ -60,10 +60,10 @@ public class CommandServiceImpl implements CommandService {
   public List<BotCommand> getCommandsPage(int pageNumber, int pageSize) {
     pageNumber = Math.max(pageNumber, 1);
     pageSize = Math.max(pageSize, 1);
-    final int n = pageNumber - 1;
+    final long pageIndex = pageNumber - 1;
     return commands.entrySet()
         .stream()
-        .skip(n * pageSize)
+        .skip(pageIndex * pageSize)
         .limit(pageSize)
         .map(Entry::getValue)
         .collect(Collectors.toList());
