@@ -20,11 +20,6 @@ configurations {
     }
 }
 
-repositories {
-    mavenCentral()
-    jcenter()
-}
-
 dependencies {
     compile 'net.logstash.logback:logstash-logback-encoder:6.4'
     compile 'com.fasterxml.jackson.module:jackson-module-jaxb-annotations'
@@ -56,7 +51,7 @@ test {
 
 checkstyle {
     toolVersion '7.8.1'
-    configFile file("config/checkstyle/checkstyle.xml")
+    configFile file("../config/checkstyle/checkstyle.xml")
 }
 checkstyleMain {
     source = 'src/main/java'
