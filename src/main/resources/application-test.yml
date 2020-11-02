@@ -1,6 +1,5 @@
-team:
-  f:
+agile:
+  bot:
     discord:
-      bot:
-        token: test
-        command-prefix: '!'
+      command-prefix: '!'
+      token: test
