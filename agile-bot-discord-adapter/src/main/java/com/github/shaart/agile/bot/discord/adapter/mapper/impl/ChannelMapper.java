@@ -1,7 +1,7 @@
-package com.github.shaart.agile.bot.mapper.impl;
+package com.github.shaart.agile.bot.discord.adapter.mapper.impl;
 
-import com.github.shaart.agile.bot.dto.ChannelDto;
-import com.github.shaart.agile.bot.mapper.DtoMapper;
+import com.github.shaart.agile.bot.discord.adapter.mapper.DtoMapper;
+import com.github.shaart.agile.bot.discord.adapter.dto.ChannelDto;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import org.springframework.stereotype.Component;
 

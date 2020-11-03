@@ -4,16 +4,15 @@ import static com.github.shaart.agile.bot.service.CommandService.DEFAULT_PAGE_NU
 import static com.github.shaart.agile.bot.service.CommandService.DEFAULT_PAGE_SIZE;
 
 import com.github.shaart.agile.bot.command.AbstractBotCommand;
+import com.github.shaart.agile.bot.command.BotCommand;
 import com.github.shaart.agile.bot.component.MessageSender;
 import com.github.shaart.agile.bot.dto.ChannelDto;
 import com.github.shaart.agile.bot.dto.CommandDto;
 import com.github.shaart.agile.bot.dto.EventDto;
-import com.github.shaart.agile.bot.util.BotNumberUtils;
-import com.github.shaart.agile.bot.command.BotCommand;
 import com.github.shaart.agile.bot.properties.AgileBotDiscordProperties;
 import com.github.shaart.agile.bot.service.CommandService;
+import com.github.shaart.agile.bot.util.BotNumberUtils;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -109,7 +108,6 @@ public class HelpCommand extends AbstractBotCommand {
     }
   }
 
-  @NotNull
   private List<BotCommand> findSingleCommand(String alias) {
     final String commandWithPrefix = applicationProperties.getCommandPrefix() + alias;
     final CommandDto commandDto = CommandDto.forName(commandWithPrefix);

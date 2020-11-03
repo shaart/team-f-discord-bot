@@ -1,19 +1,12 @@
-package com.github.shaart.agile.bot.listener;
+package com.github.shaart.agile.bot.discord.adapter.listener;
 
 import static net.logstash.logback.marker.Markers.append;
 
-import com.github.shaart.agile.bot.command.BotCommand;
-import com.github.shaart.agile.bot.component.MessageSender;
-import com.github.shaart.agile.bot.component.Tokenizer;
-import com.github.shaart.agile.bot.dto.ChannelDto;
-import com.github.shaart.agile.bot.dto.CommandDto;
-import com.github.shaart.agile.bot.dto.EventDto;
-import com.github.shaart.agile.bot.dto.MessageDto;
-import com.github.shaart.agile.bot.exception.CommandNotFoundException;
-import com.github.shaart.agile.bot.exception.CommandValidationException;
-import com.github.shaart.agile.bot.mapper.impl.EventMapper;
-import com.github.shaart.agile.bot.properties.AgileBotDiscordProperties;
-import com.github.shaart.agile.bot.service.CommandService;
+import com.github.shaart.agile.bot.discord.adapter.dto.ChannelDto;
+import com.github.shaart.agile.bot.discord.adapter.dto.MessageDto;
+import com.github.shaart.agile.bot.discord.adapter.mapper.impl.EventMapper;
+import com.github.shaart.agile.bot.discord.adapter.properties.AgileBotDiscordProperties;
+import com.github.shaart.agile.bot.discord.adapter.dto.EventDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -32,9 +25,6 @@ public class AgileBotDiscordListener extends ListenerAdapter {
   public static final String NO_MESSAGE = "";
   public static final String MDC_EVENT_ID_FIELD = "global_event_id";
 
-  private final Tokenizer tokenizer;
-  private final MessageSender messageSender;
-  private final CommandService commandService;
   private final AgileBotDiscordProperties properties;
   private final EventMapper eventMapper;
 
@@ -75,27 +65,5 @@ public class AgileBotDiscordListener extends ListenerAdapter {
             .and(append("channel_name", event.getChannel().getName())),
         "Got a message from user at server (with server id) in channel");
     final ChannelDto channel = event.getChannel();
-    try {
-      final CommandDto commandDto = tokenizer.toCommand(content);
-      log.info(append("command_name", commandDto.getAlias(properties.getCommandPrefix()))
-              .and(append("command_arguments", commandDto.getArguments())),
-          "Searching for received command with name and arguments");
-      final BotCommand botCommand = commandService.findCommand(commandDto);
-      final String[] args = commandDto.getArguments();
-
-      log.debug(append("command_name", commandDto.getAlias(properties.getCommandPrefix()))
-              .and(append("command_arguments", commandDto.getArguments())),
-          "Validating command name");
-      commandService.validateArguments(botCommand, args);
-
-      botCommand.run(event, args);
-    } catch (CommandValidationException | CommandNotFoundException e) {
-      log.error(NO_MESSAGE, e);
-      messageSender.sendError(channel, e.getMessage());
-    } catch (Exception e) {
-      log.error(e.getMessage(), e);
-      final String errorMessage = "An unknown error occurred on running command: " + content;
-      messageSender.sendError(channel, errorMessage);
-    }
   }
 }

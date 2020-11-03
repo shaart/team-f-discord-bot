@@ -2,7 +2,7 @@ package com.github.shaart.agile.bot;
 
 import org.junit.jupiter.api.Test;
 
-class TeamFDiscordBotApplicationIntegrationTest extends AbstractIntegrationTest {
+class AgileBotCoreApplicationIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   void contextLoads() {

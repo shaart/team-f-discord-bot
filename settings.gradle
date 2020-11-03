@@ -1,4 +1,5 @@
 rootProject.name = 'agile-bot'
 include 'agile-bot-core'
 include 'agile-bot-discord-adapter'
+include 'agile-bot-util'
 

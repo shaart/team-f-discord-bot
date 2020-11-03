@@ -1,4 +1,10 @@
-allprojects {
+apply plugin: 'base'
+
+group = 'com.github.shaart.agile.bot'
+
+subprojects {
+    apply plugin: 'java'
+
     repositories {
         mavenCentral()
         jcenter()

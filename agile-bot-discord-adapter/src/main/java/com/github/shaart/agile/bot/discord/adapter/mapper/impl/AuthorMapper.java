@@ -1,7 +1,7 @@
-package com.github.shaart.agile.bot.mapper.impl;
+package com.github.shaart.agile.bot.discord.adapter.mapper.impl;
 
-import com.github.shaart.agile.bot.dto.AuthorDto;
-import com.github.shaart.agile.bot.mapper.DtoMapper;
+import com.github.shaart.agile.bot.discord.adapter.mapper.DtoMapper;
+import com.github.shaart.agile.bot.discord.adapter.dto.AuthorDto;
 import net.dv8tion.jda.api.entities.User;
 import org.springframework.stereotype.Component;
 

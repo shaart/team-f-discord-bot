@@ -1,0 +1,20 @@
+agile:
+  bot:
+    discord:
+      command-prefix: '!'
+      token:
+
+spring:
+  profiles:
+    active: dev
+  main:
+    banner-mode: off
+  liquibase:
+    enabled: false
+
+logging:
+  level:
+    ROOT: ERROR
+    org.springframework: ERROR
+    org.springframework.data: ERROR
+    com.github.shaart.agile.bot: TRACE
