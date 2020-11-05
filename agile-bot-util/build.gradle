@@ -1,5 +1,3 @@
-import com.github.spotbugs.snom.SpotBugsReport
-
 plugins {
     id 'java'
     id 'checkstyle'
@@ -57,12 +55,12 @@ spotbugs {
     ignoreFailures.set(true)
 }
 spotbugsMain {
-    reports(({
+    reports {
         xml {
             enabled = false
         }
         html {
             enabled = true
         }
-    } as Closure<NamedDomainObjectContainer<? extends SpotBugsReport>>))
+    }
 }
