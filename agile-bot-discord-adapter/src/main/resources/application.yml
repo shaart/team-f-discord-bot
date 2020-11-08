@@ -2,7 +2,7 @@ agile:
   bot:
     discord:
       command-prefix: '!'
-      token:
+      token: ${DISCORD_BOT_TOKEN:}
 
 spring:
   profiles:
