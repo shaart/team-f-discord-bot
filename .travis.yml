@@ -30,16 +30,11 @@ addons:
 jobs:
   include:
     - stage: sonarqube
-      name: core
       script: cd agile-bot-core && ./gradlew sonarqube
-    - name: discord-adapter
-      script: agile-bot-discord-adapter && ./gradlew sonarqube
-    - name: util
-      script: agile-bot-util && ./gradlew sonarqube
+    - script: agile-bot-discord-adapter && ./gradlew sonarqube
+    - script: agile-bot-util && ./gradlew sonarqube
+
     - stage: build
-      name: core
       script: cd agile-bot-core && ./gradlew build -s
-    - name: discord-adapter
-      script: cd agile-bot-discord-adapter && ./gradlew build -s
-    - name: util
-      script: cd agile-bot-util && ./gradlew build -s
+    - script: cd agile-bot-discord-adapter && ./gradlew build -s
+    - script: cd agile-bot-util && ./gradlew build -s
