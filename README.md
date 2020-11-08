@@ -6,7 +6,7 @@
 | Code Coverage | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=shaart_team-f-discord-bot&metric=coverage)](https://sonarcloud.io/dashboard?id=shaart_team-f-discord-bot) | - |
 
 # About
-Team's bot for discord. Helps to manage team's events.
+An agile bot that can use pluggable commands.
 - Developed on OpenJDK11.
 - Supported Java: 11+. 
 
@@ -20,5 +20,6 @@ Team's bot for discord. Helps to manage team's events.
 1. Build the application.
 2. Run the application.
 ```shell script
-java -jar -Dagile.bot.discord.token="<TOKEN>" ./build/libs/team-f-discord-bot-<version>.jar
+java -jar ./agile-bot-core/build/libs/agile-bot-core-<version>.jar
+java -jar -Dagile.bot.discord.token="<TOKEN>" ./agile-bot-adapter/build/libs/agile-bot-discord-adapter-<version>.jar
 ```
