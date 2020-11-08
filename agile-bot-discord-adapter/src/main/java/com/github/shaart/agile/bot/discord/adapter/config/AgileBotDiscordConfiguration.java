@@ -1,7 +1,7 @@
 package com.github.shaart.agile.bot.discord.adapter.config;
 
-import com.github.shaart.agile.bot.discord.adapter.properties.AgileBotDiscordProperties;
 import com.github.shaart.agile.bot.discord.adapter.listener.AgileBotDiscordListener;
+import com.github.shaart.agile.bot.discord.adapter.properties.AgileBotDiscordProperties;
 import com.github.shaart.agile.bot.util.BotStringUtils;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
