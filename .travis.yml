@@ -4,22 +4,22 @@ install: skip
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-  
+
 cache:
   directories:
     - "$HOME/.m2"
     - '$HOME/.gradle/caches/'
     - '$HOME/.sonar/cache'
     - '$HOME/.gradle/wrapper/'
-    
+
 os: linux
 dist: trusty
 jdk: openjdk11
 
 branches:
   only:
-  - master
-  - dev
+    - master
+    - dev
 
 addons:
   sonarcloud:
@@ -27,6 +27,17 @@ addons:
     token:
       secure: "Lw+dUO4b+ITtZSTO/7/qt3BswbV6jjG9ddXL0hEN6UyynNDnLcdL7TptefDCLY2BRxlx3tbd+MGEgKyX6uoambTHxXBoKlQCQikjLSpM4gJ+WY1cFhIwxAgHbTJRQb+2vaXCs3DeCjz4AAVSYot0hkKCQ6ZQQ23cbx9+2RT/coA0Wc/nfIwH8LED8rl6HKM6p1r6yAoOcSRwqD0+IDb5OAgfCZGuGtAss9qldfvcscKKgaSnoOoxkIN+TogEip/vxJlq7Om2RrIKFXTSVUe77UCdt9z6NZxkjk1+MrQpbfqcRx1LX6lbBuv6DgWSVYKEz/SUmzGbw61WroUEhsGNoelyQP4oMapv0NGBzOdDz2SDAjQk0a5Ik0TUv681M9P168Eqd2zhqDqcC06cNlYw/7YBc25TxOtfRMA68Yjy1dYjmj0sXvsW0uMiFVoJnFqI3MWYMChzgFBXxJ68zHNyr+yYqR/dIVQmyT6FZgBiw0LJzKzLHGSqIsZSUQAefHVHAq6Zo7t9bsLWuWgAX9vZ36grNWmGa/N+XYQPBCQhnBU0EydJfi8X5Ikq36DVPuKjjXdSsev2JGuFrMMWlj+K6LclbZPGGawYDbQjl5emcPJMWhXMPr9PlNtBNRn0xl4IFwQc8aHKUnIpYNTIpLeZF0juBhUatWEaCYMSg10VpBw="
 
-script:
-  - ./gradlew sonarqube
-  - ./gradlew build -s
+jobs:
+  include:
+    - stage: sonarqube core
+      script: cd agile-bot-core && ./gradlew sonarqube
+    - stage: sonarqube discord-adapter
+      script: agile-bot-discord-adapter && ./gradlew sonarqube
+    - stage: sonarqube util
+      script: agile-bot-util && ./gradlew sonarqube
+    - stage: build core
+      script: cd agile-bot-core && ./gradlew build -s
+    - stage: build discord-adapter
+      script: cd agile-bot-discord-adapter && ./gradlew build -s
+    - stage: build util
+      script: cd agile-bot-util && ./gradlew build -s
