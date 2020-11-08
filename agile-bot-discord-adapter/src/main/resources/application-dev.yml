@@ -1,5 +1,9 @@
 agile:
   bot:
     discord:
-      token: NzMwODcyMTkyOTkyMTQ5NTI0.XwdzzA.kD922OX02dZE2PeTGx6NLjEIRRA
       command-prefix: '!'
+
+
+logging:
+  level:
+    com.github.shaart.agile.bot: TRACE

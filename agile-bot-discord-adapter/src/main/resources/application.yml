@@ -2,7 +2,7 @@ agile:
   bot:
     discord:
       command-prefix: '!'
-      token:
+      token: ${DISCORD_BOT_TOKEN:}
 
 spring:
   profiles:
@@ -12,9 +12,43 @@ spring:
   liquibase:
     enabled: false
 
+  # Embedded ActiveMQ Configuration Example
+  activemq:
+    broker-url: vm://embedded?broker.persistent=false,useShutdownHook=false
+    in-memory: true
+    non-blocking-redelivery: true
+    packages:
+      trust-all: false
+      trusted: com.github.shaart.agile.bot
+    pool:
+      block-if-full: true
+      block-if-full-timeout: -1
+      enabled: false
+      idle-timeout: 30000
+      max-connections: 1
+      time-between-expiration-check: -1
+      use-anonymous-producers: true
+      max-sessions-per-connection: 500
+
+  # Spring JMS Settings
+  jms:
+    listener:
+      acknowledge-mode: auto
+      auto-startup: true
+      concurrency: 5
+      max-concurrency: 10
+    pub-sub-domain: false
+    template:
+      default-destination:
+      delivery-mode: non_persistent
+      priority: 100
+      qos-enabled: true
+      receive-timeout: 1000
+      time-to-live: 36000
+
 logging:
   level:
     ROOT: ERROR
     org.springframework: ERROR
     org.springframework.data: ERROR
-    com.github.shaart.agile.bot: TRACE
+    com.github.shaart.agile.bot: INFO

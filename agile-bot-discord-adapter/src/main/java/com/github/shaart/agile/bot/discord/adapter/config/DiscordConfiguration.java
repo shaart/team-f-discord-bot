@@ -1,11 +1,11 @@
 package com.github.shaart.agile.bot.discord.adapter.config;
 
+import com.github.shaart.agile.bot.discord.adapter.client.adapter.discord.JDABuilderAdapter;
 import com.github.shaart.agile.bot.discord.adapter.listener.AgileBotDiscordListener;
 import com.github.shaart.agile.bot.discord.adapter.properties.AgileBotDiscordProperties;
 import com.github.shaart.agile.bot.util.BotStringUtils;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -19,7 +19,7 @@ import javax.security.auth.login.LoginException;
 
 @Configuration
 @RequiredArgsConstructor
-public class AgileBotDiscordConfiguration {
+public class DiscordConfiguration {
 
   public static final List<GatewayIntent> GATEWAY_INTENTS = Collections
       .singletonList(GatewayIntent.GUILD_MESSAGES);
@@ -43,7 +43,7 @@ public class AgileBotDiscordConfiguration {
 
     final String activityStatus = String.format("%shelp",
         properties.getCommandPrefix());
-    return JDABuilder.create(botToken, GATEWAY_INTENTS)
+    return JDABuilderAdapter.create(botToken, GATEWAY_INTENTS)
         .setStatus(OnlineStatus.ONLINE)
         .setActivity(Activity.listening(activityStatus))
         .addEventListeners(listener)

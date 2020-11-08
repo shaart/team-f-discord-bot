@@ -14,5 +14,5 @@ public interface DtoMapper<S, T> {
    * @param receivedEvent event of library type
    * @return event of app's type
    */
-  T toInternalDto(S receivedEvent);
+  T toInternalModel(S receivedEvent);
 }
